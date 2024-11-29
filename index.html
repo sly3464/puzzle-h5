@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>拼图闯关</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="game-header">
+            <h1>拼图闯关</h1>
+            <div class="level-info">当前关卡：<span id="current-level">1</span></div>
+            <div class="game-info">
+                <span>步数: <span id="moves">0</span></span>
+                <span>时间: <span id="time">00:00</span></span>
+            </div>
+        </div>
+        
+        <div class="puzzle-container" id="puzzle"></div>
+        
+        <div class="controls">
+            <button id="start-btn">开始游戏</button>
+            <button id="upload-btn">上传图片</button>
+        </div>
+        
+        <input type="file" id="image-upload" accept="image/*" style="display: none;">
+    </div>
+
+    <!-- 添加模态框 -->
+    <div class="modal" id="gameModal">
+        <div class="modal-content">
+            <h2 id="modal-title"></h2>
+            <p id="modal-message"></p>
+            <div class="modal-buttons">
+                <button id="modal-next" class="modal-btn">下一关</button>
+                <button id="modal-restart" class="modal-btn">重新挑战</button>
+                <button id="modal-upload" class="modal-btn">上传新图片</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/game.js"></script>
+</body>
+</html> 
