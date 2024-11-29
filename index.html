@@ -1,48 +1,79 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>拼图闯关</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>拼图游戏</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-ui@1.13.2/dist/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-ui-touch-punch@0.2.3/jquery.ui.touch-punch.min.js"></script>
 </head>
 <body>
     <div class="container">
         <div class="game-header">
-            <h1>拼图闯关</h1>
-            <div class="level-info">当前关卡：<span id="current-level">1</span></div>
-            <div class="game-info">
-                <span>步数: <span id="moves">0</span></span>
-                <span>时间: <span id="time">00:00</span></span>
+            <h1 class="game-title">拼图游戏</h1>
+            <div class="game-stats">
+                <div class="stat-item">
+                    <div class="stat-label">关卡</div>
+                    <div class="stat-value" id="current-level">1</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">步数</div>
+                    <div class="stat-value" id="moves">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">时间</div>
+                    <div class="stat-value" id="time">00:00</div>
+                </div>
             </div>
         </div>
-        
-        <div class="puzzle-container" id="puzzle"></div>
-        
-        <div class="controls">
-            <button id="start-btn">开始游戏</button>
-            <button id="upload-btn">上传图片</button>
+
+        <div class="preview-button-container">
+            <button id="preview-btn" class="btn secondary">查看示例图</button>
         </div>
-        
-        <input type="file" id="image-upload" accept="image/*" style="display: none;">
+
+        <div id="puzzle" class="puzzle-container"></div>
+
+        <div id="preview-container" class="preview-container">
+            <img id="preview-image" src="" alt="示例图">
+        </div>
+
+        <div class="controls">
+            <button id="start-btn" class="btn primary">开始游戏</button>
+            <button id="upload-btn" class="btn secondary">上传图片</button>
+            <input type="file" id="image-upload" accept="image/*">
+        </div>
     </div>
 
-    <!-- 添加模态框 -->
-    <div class="modal" id="gameModal">
+    <!-- 游戏结果弹窗 -->
+    <div id="gameModal" class="modal">
         <div class="modal-content">
             <h2 id="modal-title"></h2>
-            <p id="modal-message"></p>
+            <div id="modal-message"></div>
             <div class="modal-buttons">
-                <button id="modal-next" class="modal-btn">下一关</button>
-                <button id="modal-restart" class="modal-btn">重新挑战</button>
-                <button id="modal-upload" class="modal-btn">上传新图片</button>
+                <button id="modal-next" class="btn primary">下一关</button>
+                <button id="modal-restart" class="btn">重新开始</button>
+                <button id="modal-upload" class="btn secondary">换图片</button>
             </div>
         </div>
     </div>
 
-    <script type="module" src="js/game.js"></script>
+    <!-- 排行榜弹窗 -->
+    <div id="leaderboardModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>排行榜</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="leaderboard-content">
+                <ul id="leaderboard"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/leaderboard.js"></script>
+    <script src="js/game.js"></script>
 </body>
 </html> 
