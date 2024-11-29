@@ -22,4 +22,5 @@
 
 ## 安装和使用
 
-1. 克隆仓库：
+1. 克隆仓库：https://github.com/sly3464/puzzle-h5.git
+2. 打开 index.html 文件即可开始游戏
