@@ -94,7 +94,7 @@
 
 ### 克隆仓库：
 ```bash
-git clone https://github.com/yourusername/puzzle-game.git
+git clone https://github.com/sly3464/puzzle-h5.git
 ```
 
 ## 许可证
@@ -111,5 +111,5 @@ MIT License
 
 ## 联系方式
 
-- 项目地址：[GitHub](https://github.com/yourusername/puzzle-game)
-- 问题反馈：[Issues](https://github.com/yourusername/puzzle-game/issues)
+- 项目地址：[GitHub](https://github.com/sly3464/puzzle-h5)
+- 问题反馈：[Issues](https://github.com/sly3464/puzzle-h5/issues)
