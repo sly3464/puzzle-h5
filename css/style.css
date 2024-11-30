@@ -25,16 +25,16 @@ body {
 }
 
 .container {
-    max-width: 600px;
-    padding: 20px;
+    max-width: 800px;
     margin: 0 auto;
+    padding: 20px;
 }
 
 .game-header {
     text-align: center;
     margin-bottom: 30px;
     background: white;
-    padding: 20px;
+    padding: 0 20px;
     border-radius: 16px;
     box-shadow: var(--shadow);
 }
@@ -81,12 +81,12 @@ body {
 .puzzle-container {
     position: relative;
     width: 100%;
-    max-width: 500px;
-    margin: 0 auto 30px;
+    max-width: 100%;
+    margin: 0 auto;
     aspect-ratio: 1;
     background: white;
     border-radius: 16px;
-    box-shadow: var(--shadow);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     overflow: hidden;
 }
 
@@ -114,10 +114,10 @@ body {
 }
 
 .controls {
+    margin-top: 20px;
     display: flex;
     justify-content: center;
-    gap: 15px;
-    margin: 30px 0;
+    gap: 10px;
 }
 
 .btn {
@@ -170,8 +170,8 @@ body {
 
 .modal-content {
     background: white;
-    padding: 30px;
-    border-radius: 20px;
+    padding: 25px;
+    border-radius: 15px;
     width: 90%;
     max-width: 400px;
     text-align: center;
@@ -276,16 +276,36 @@ body {
 }
 
 .win-message {
-    text-align: center;
     padding: 20px 0;
 }
 
-.level-stats,
-.final-stats {
+.congrats-text {
+    font-size: 1.2em;
+    color: var(--primary-color);
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.achievement-text {
+    color: #f39c12;
+    font-weight: bold;
+    margin-top: 20px;
+    font-size: 1.1em;
+}
+
+.final-stats,
+.level-stats {
     background: #f8f9fa;
     border-radius: 10px;
     padding: 15px;
     margin: 15px 0;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+}
+
+.final-stats p,
+.level-stats p {
+    margin: 5px 0;
+    color: #666;
 }
 
 .next-level-hint {
@@ -317,8 +337,8 @@ body {
 
 /* 添加示例图相关样式 */
 .preview-button-container {
-    text-align: center;
     margin: 10px 0;
+    text-align: center;
 }
 
 .preview-container {
@@ -353,4 +373,19 @@ body {
     background: rgba(0,0,0,0.5);
     z-index: 999;
     display: none;
-} 
+}
+
+.game-area {
+    background: #f8f9fa;
+    border-radius: 20px;
+    padding: 15px;
+    margin: 10px 0;
+}
+
+/* 确保拼图块容器紧贴边缘 */
+@media screen and (min-width: 500px) {
+    .puzzle-container {
+        max-width: 500px;
+    }
+}
+  

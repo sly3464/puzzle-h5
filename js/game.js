@@ -25,6 +25,7 @@ class Game {
     }
 
     createInitialPuzzle() {
+        this.gridSize = 2; // 初始显示4宫格
         const img = new Image();
         img.onload = () => {
             this.createPuzzle();
@@ -48,25 +49,36 @@ class Game {
             if (!this.isPlaying) {
                 this.startGame();
                 this.startBtn.text('重新开始');
+                this.uploadBtn.prop('disabled', true).addClass('disabled');
             } else {
                 this.resetGame();
             }
         });
-        
-        this.uploadBtn.on('click', () => this.imageUpload.click());
-        this.imageUpload.on('change', (e) => this.handleImageUpload(e));
+
+        this.uploadBtn.on('click', () => {
+            if (!this.isPlaying) {
+                this.imageUpload.click();
+            }
+        });
+
+        this.imageUpload.on('change', (e) => {
+            if (!this.isPlaying) {
+                this.handleImageUpload(e);
+            }
+        });
     }
 
     resetGame() {
+        // 重置时也要根据当前关卡设置网格大小
         switch(this.currentLevel) {
             case 1:
-                this.gridSize = 2;
+                this.gridSize = 2; // 4宫格
                 break;
             case 2:
-                this.gridSize = 3;
+                this.gridSize = 3; // 9宫格
                 break;
             case 3:
-                this.gridSize = 4;
+                this.gridSize = 4; // 16宫格
                 break;
         }
 
@@ -80,6 +92,7 @@ class Game {
     }
 
     startGame() {
+        // 根据关卡设置网格大小
         switch(this.currentLevel) {
             case 1:
                 this.gridSize = 2; // 第一关 4宫格 (2x2)
@@ -102,6 +115,8 @@ class Game {
         this.createPuzzle();
         this.initDraggable();
         this.startTimer();
+        this.startBtn.text('重新开始');
+        this.uploadBtn.prop('disabled', true).addClass('disabled');
     }
 
     createPuzzle() {
@@ -127,9 +142,20 @@ class Game {
                     left: col * pieceWidth,
                     top: row * pieceWidth,
                     border: '1px solid rgba(255,255,255,0.2)',
-                    boxSizing: 'border-box'
+                    boxSizing: 'border-box',
+                    cursor: this.isPlaying ? 'move' : 'pointer'
                 })
                 .attr('data-index', i);
+            
+            // 为每个拼图块添加点击事件
+            if (!this.isPlaying) {
+                piece.on('mousedown touchstart', (e) => {
+                    if (!this.isPlaying) {
+                        e.preventDefault();
+                        this.showGameStartTip();
+                    }
+                });
+            }
             
             this.pieces.push(piece);
             this.puzzleContainer.append(piece);
@@ -163,29 +189,37 @@ class Game {
     }
 
     initDraggable() {
+        let isDragging = false; // 添加拖动状态标记
         let startPosition = null;
         let startElement = null;
 
         $('.puzzle-piece').draggable({
-            containment: this.puzzleContainer,
+            containment: 'parent',
             zIndex: 1000,
             start: function(event, ui) {
-                startPosition = ui.position;
+                // 如果已经在拖动中，阻止新的拖动开始
+                if (isDragging) {
+                    return false;
+                }
+                
+                isDragging = true;
+                startPosition = $(this).position();
                 startElement = $(this);
                 $(this).addClass('dragging');
             },
             stop: function(event, ui) {
-                $(this).removeClass('dragging');
-                let endElement = null;
+                const currentElement = $(this);
+                currentElement.removeClass('dragging');
                 
-                // 获取当前拖动元素的中心点
-                const draggedCenter = {
-                    x: ui.offset.left + $(this).width() / 2,
-                    y: ui.offset.top + $(this).height() / 2
+                let endElement = null;
+                let minDistance = Number.MAX_VALUE;
+                const currentCenter = {
+                    x: ui.offset.left + currentElement.width() / 2,
+                    y: ui.offset.top + currentElement.height() / 2
                 };
 
-                // 检查是否与其他拼图块重叠
-                $('.puzzle-piece').not(this).each(function() {
+                // 找到最近的拼图块
+                $('.puzzle-piece').not(currentElement).each(function() {
                     const piece = $(this);
                     const pieceOffset = piece.offset();
                     const pieceCenter = {
@@ -193,36 +227,43 @@ class Game {
                         y: pieceOffset.top + piece.height() / 2
                     };
 
-                    // 计算两个中心点之间的距离
                     const distance = Math.sqrt(
-                        Math.pow(draggedCenter.x - pieceCenter.x, 2) +
-                        Math.pow(draggedCenter.y - pieceCenter.y, 2)
+                        Math.pow(currentCenter.x - pieceCenter.x, 2) +
+                        Math.pow(currentCenter.y - pieceCenter.y, 2)
                     );
 
-                    // 如果距离小于拼图块宽度的一半，认为发生重叠
-                    if (distance < piece.width() / 2) {
+                    if (distance < minDistance && distance < piece.width()) {
+                        minDistance = distance;
                         endElement = piece;
-                        return false; // 跳出each循环
                     }
                 });
 
-                // 如果找到重叠的元素，执行交换
+                // 如果找到目标拼图块，执行交换
                 if (endElement) {
                     const endPosition = endElement.position();
                     
-                    // 交换位置
-                    startElement.animate(endPosition, 200);
-                    endElement.animate(startPosition, 200);
+                    // 禁用所有拼图块的拖动
+                    $('.puzzle-piece').draggable('disable');
                     
-                    // 增加移动步数
-                    game.moves++;
-                    game.updateDisplay();
-                    
-                    // 检查是否完成
-                    setTimeout(() => game.checkWin(), 250);
+                    // 执行交换动画
+                    currentElement.animate(endPosition, 200);
+                    endElement.animate(startPosition, 200, () => {
+                        // 动画完成后重新启用拖动
+                        $('.puzzle-piece').draggable('enable');
+                        isDragging = false;
+                        
+                        // 增加移动步数
+                        game.moves++;
+                        game.updateDisplay();
+                        
+                        // 检查是否完成
+                        setTimeout(() => game.checkWin(), 50);
+                    });
                 } else {
-                    // 如果没有重叠，返回起始位置
-                    startElement.animate(startPosition, 200);
+                    // 如果没有找到目标，返回起始位置
+                    currentElement.animate(startPosition, 200, () => {
+                        isDragging = false;
+                    });
                 }
             }
         });
@@ -265,13 +306,21 @@ class Game {
     }
 
     checkWin() {
+        // 确保没有动画正在进行中
+        if ($('.puzzle-piece:animated').length > 0) {
+            return;
+        }
+
         const isWin = $('.puzzle-piece').toArray().every((piece) => {
             const $piece = $(piece);
             const currentPos = $piece.position();
             const index = parseInt($piece.attr('data-index'));
+            const pieceWidth = $piece.width();
+            const correctRow = Math.floor(index / this.gridSize);
+            const correctCol = index % this.gridSize;
             const correctPos = {
-                left: (index % this.gridSize) * $piece.width(),
-                top: Math.floor(index / this.gridSize) * $piece.height()
+                left: correctCol * pieceWidth,
+                top: correctRow * pieceWidth
             };
             
             return Math.abs(currentPos.left - correctPos.left) < 5 &&
@@ -289,20 +338,36 @@ class Game {
         const modalMessage = $('#modal-message');
         
         if (this.currentLevel === 3) {
-            modalTitle.text('恭喜通关！');
+            // 先显示第三关成绩
+            modalTitle.text('第三关完成！');
             modalMessage.html(`
                 <div class="win-message">
-                    <p>🎉 恭喜你完成了所有关卡！</p>
-                    <div class="final-stats">
-                        <p>最终用时：${this.timeDisplay.text()}</p>
-                        <p>总步数：${this.moves}步</p>
+                    <p>🎉 恭喜通过最终关卡！</p>
+                    <div class="level-stats">
+                        <p>用时：${this.timeDisplay.text()}</p>
+                        <p>步数：${this.moves}步</p>
+                        <p>难度：16宫格</p>
                     </div>
                 </div>
             `);
             
+            // 修改按钮显示
             $('#modal-next').hide();
-            $('#modal-restart').text('重新挑战');
+            $('#modal-restart').hide();
+            
+            // 添加关闭按钮
+            const closeBtn = $('<button>')
+                .addClass('btn primary')
+                .text('关闭')
+                .on('click', () => {
+                    this.modal.hide();
+                    // 显示通关成绩
+                    this.showFinalWinModal();
+                });
+            
+            $('.modal-buttons').empty().append(closeBtn);
         } else {
+            // 单关完成提示
             const nextLevel = this.currentLevel + 1;
             const nextGridSize = nextLevel === 2 ? '9' : '16';
             modalTitle.text(`第${this.currentLevel}关完成！`);
@@ -312,16 +377,64 @@ class Game {
                     <div class="level-stats">
                         <p>用时：${this.timeDisplay.text()}</p>
                         <p>步数：${this.moves}步</p>
+                        <p>难度：${this.currentLevel === 1 ? '4' : '9'}宫格</p>
                     </div>
                     <p class="next-level-hint">准备好挑战${nextGridSize}宫格了吗？</p>
                 </div>
             `);
             
-            $('#modal-next').toggle(this.currentLevel < 3);
+            // 显示下一关和重玩按钮
+            $('#modal-next').show().text('开始第' + nextLevel + '关');
+            $('#modal-restart').text('重玩本关').removeClass('primary').show();
         }
         
         this.modal.css('display', 'flex');
+    }
+
+    showFinalWinModal() {
+        const modalTitle = $('#modal-title');
+        const modalMessage = $('#modal-message');
         
+        modalTitle.text('🏆 恭喜通关！');
+        modalMessage.html(`
+            <div class="win-message">
+                <p class="congrats-text">太棒了！你已完成所有关卡！</p>
+                <div class="final-stats">
+                    <p>最终用时：${this.timeDisplay.text()}</p>
+                    <p>总步数：${this.moves}步</p>
+                </div>
+                <p class="achievement-text">你已经是拼图大师了！</p>
+            </div>
+        `);
+        
+        // 修改按钮
+        $('.modal-buttons').empty().append(`
+            <button id="modal-restart" class="btn primary">重新开始</button>
+            <button id="modal-change-image" class="btn secondary">换一张图片试试</button>
+        `);
+        
+        // 绑定按钮事件
+        $('#modal-restart').on('click', () => {
+            this.currentLevel = 1; // 重置到第一关
+            this.isPlaying = false;
+            this.modal.hide();
+            this.startGame();
+        });
+        
+        $('#modal-change-image').on('click', () => {
+            this.currentLevel = 1; // 重置到第一关
+            this.isPlaying = false;
+            this.modal.hide();
+            this.uploadBtn.click(); // 触发图片上传
+        });
+        
+        // 重置游戏状态
+        this.isPlaying = false;
+        this.uploadBtn.prop('disabled', false).removeClass('disabled');
+        
+        this.modal.css('display', 'flex');
+        
+        // 保存成绩
         const score = {
             level: this.currentLevel,
             moves: this.moves,
@@ -366,16 +479,12 @@ class Game {
         });
 
         $('#modal-restart').on('click', () => {
-            if (this.currentLevel === 3) {
+            // 如果是通关后重新开始，重置到第一关
+            if (this.currentLevel === 3 && !this.isPlaying) {
                 this.currentLevel = 1;
             }
             this.modal.hide();
             this.startGame();
-        });
-
-        $('#modal-upload').on('click', () => {
-            this.modal.hide();
-            this.uploadBtn.click();
         });
     }
 
@@ -399,10 +508,119 @@ class Game {
         this.overlay.hide();
         this.previewContainer.hide();
     }
+
+    // 添加游戏开始提示方法
+    showGameStartTip() {
+        // 移除可能存在的旧提示
+        $('.tip-modal').remove();
+        
+        // 创建提示框
+        const tipModal = $('<div>')
+            .addClass('tip-modal')
+            .html(`
+                <div class="tip-content">
+                    <p>请点击"开始游戏"按钮开始玩游戏</p>
+                    <button class="btn primary">知道了</button>
+                </div>
+            `);
+        
+        // 添加到页面
+        tipModal.appendTo('body');
+        
+        // 点击按钮关闭提示
+        tipModal.find('button').on('click', () => {
+            tipModal.remove();
+            // 高亮开始游戏按钮
+            this.startBtn.addClass('highlight-btn');
+            setTimeout(() => {
+                this.startBtn.removeClass('highlight-btn');
+            }, 1500);
+        });
+        
+        // 点击遮罩层关闭提示
+        tipModal.on('click', (e) => {
+            if ($(e.target).is('.tip-modal')) {
+                tipModal.remove();
+            }
+        });
+    }
 }
 
 // 创建全局游戏实例
 let game;
 $(document).ready(() => {
     game = new Game();
-}); 
+});
+
+// 添加禁用按钮样式
+$('<style>')
+    .text(`
+        .btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+    `)
+    .appendTo('head');
+
+// 添加按钮高亮样式
+$('<style>')
+    .text(`
+        .highlight-btn {
+            animation: highlight 1.5s ease;
+        }
+        @keyframes highlight {
+            0%, 100% { transform: scale(1); box-shadow: 0 4px 12px rgba(33,150,243,0.3); }
+            50% { transform: scale(1.1); box-shadow: 0 6px 16px rgba(33,150,243,0.5); }
+        }
+    `)
+    .appendTo('head');
+
+// 确保样式已添加
+if (!$('style#game-styles').length) {
+    $('<style id="game-styles">')
+        .text(`
+            .tip-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 2000;
+                animation: fadeIn 0.3s ease;
+            }
+            .tip-content {
+                background: white;
+                padding: 20px;
+                border-radius: 12px;
+                text-align: center;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                animation: slideUp 0.3s ease;
+            }
+            .tip-content p {
+                margin: 0 0 15px 0;
+                font-size: 16px;
+                color: #333;
+            }
+            .highlight-btn {
+                animation: highlight 1.5s ease;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            @keyframes slideUp {
+                from { transform: translateY(20px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+            }
+            @keyframes highlight {
+                0%, 100% { transform: scale(1); box-shadow: 0 4px 12px rgba(33,150,243,0.3); }
+                50% { transform: scale(1.1); box-shadow: 0 6px 16px rgba(33,150,243,0.5); }
+            }
+        `)
+        .appendTo('head');
+} 
