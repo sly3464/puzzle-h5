@@ -1,29 +1,46 @@
+/**
+ * 拼图游戏类
+ * 实现了一个可交互的拼图游戏,包含多个难度等级和计时功能
+ */
 class Game {
+    /**
+     * 构造函数,初始化游戏状态和UI元素
+     */
     constructor() {
-        this.currentLevel = 1;
-        this.moves = 0;
-        this.timer = null;
-        this.seconds = 0;
-        this.isPlaying = false;
-        this.gridSize = 2; // 默认从2x2开始
-        this.pieces = [];
-        this.currentImage = 'images/default-puzzle.jpg';
+        // 游戏状态相关属性
+        this.currentLevel = 1;      // 当前关卡
+        this.moves = 0;             // 移动步数
+        this.timer = null;          // 计时器
+        this.seconds = 0;           // 游戏时长(秒)
+        this.isPlaying = false;     // 是否正在游戏中
+        this.gridSize = 2;          // 网格大小,默认2x2
+        this.pieces = [];           // 拼图块数组
+        this.currentImage = 'images/default-puzzle.jpg'; // 当前拼图图片
         
+        // 初始化UI元素和事件
         this.initElements();
-        this.bindEvents();
+        this.bindEvents(); 
         this.initModalEvents();
         
+        // 创建初始拼图
         this.createInitialPuzzle();
         
+        // 预览相关元素
         this.previewBtn = $('#preview-btn');
         this.previewContainer = $('#preview-container');
         this.previewImage = $('#preview-image');
         
+        // 遮罩层
         this.overlay = $('<div class="overlay"></div>').appendTo('body');
         
+        // 绑定预览事件
         this.bindPreviewEvents();
     }
 
+    /**
+     * 创建初始拼图
+     * 加载默认图片并创建2x2拼图
+     */
     createInitialPuzzle() {
         this.gridSize = 2; // 初始显示4宫格
         const img = new Image();
@@ -33,6 +50,9 @@ class Game {
         img.src = this.currentImage;
     }
 
+    /**
+     * 初始化UI元素引用
+     */
     initElements() {
         this.puzzleContainer = $('#puzzle');
         this.startBtn = $('#start-btn');
@@ -44,7 +64,11 @@ class Game {
         this.modal = $('#gameModal');
     }
 
+    /**
+     * 绑定游戏主要控制按钮事件
+     */
     bindEvents() {
+        // 开始/重新开始按钮事件
         this.startBtn.on('click', () => {
             if (!this.isPlaying) {
                 this.startGame();
@@ -55,12 +79,14 @@ class Game {
             }
         });
 
+        // 上传图片按钮事件
         this.uploadBtn.on('click', () => {
             if (!this.isPlaying) {
                 this.imageUpload.click();
             }
         });
 
+        // 图片上传处理事件
         this.imageUpload.on('change', (e) => {
             if (!this.isPlaying) {
                 this.handleImageUpload(e);
@@ -68,8 +94,12 @@ class Game {
         });
     }
 
+    /**
+     * 重置游戏
+     * 保持当前关卡,重置计时和步数
+     */
     resetGame() {
-        // 重置时也要根据当前关卡设置网格大小
+        // 根据当前关卡设置网格大小
         switch(this.currentLevel) {
             case 1:
                 this.gridSize = 2; // 4宫格
@@ -91,6 +121,10 @@ class Game {
         this.startTimer();
     }
 
+    /**
+     * 开始新游戏
+     * 根据关卡设置难度并初始化游戏
+     */
     startGame() {
         // 根据关卡设置网格大小
         switch(this.currentLevel) {
@@ -119,6 +153,10 @@ class Game {
         this.uploadBtn.prop('disabled', true).addClass('disabled');
     }
 
+    /**
+     * 创建拼图
+     * 根据当前网格大小创建拼图块
+     */
     createPuzzle() {
         this.puzzleContainer.empty();
         this.pieces = [];
@@ -168,6 +206,10 @@ class Game {
         }
     }
 
+    /**
+     * 处理图片上传
+     * @param {Event} e - 上传事件对象
+     */
     handleImageUpload(e) {
         const file = e.target.files[0];
         if (file && file.type.startsWith('image/')) {
@@ -188,6 +230,10 @@ class Game {
         }
     }
 
+    /**
+     * 初始化拖拽功能
+     * 使用jQuery UI实现拼图块的拖拽交换
+     */
     initDraggable() {
         let isDragging = false;
         let startPosition = null;
@@ -261,6 +307,10 @@ class Game {
         });
     }
 
+    /**
+     * 打乱拼图
+     * 确保生成的拼图有解
+     */
     shufflePuzzle() {
         const positions = this.pieces.map((_, index) => {
             const row = Math.floor(index / this.gridSize);
@@ -284,6 +334,11 @@ class Game {
         });
     }
 
+    /**
+     * 检查拼图是否可解
+     * @param {Array} positions - 拼图块位置数组
+     * @returns {boolean} 是否可解
+     */
     isSolvable(positions) {
         let inversions = 0;
         for (let i = 0; i < positions.length - 1; i++) {
@@ -297,6 +352,10 @@ class Game {
         return inversions > 0 && inversions % 2 === 0;
     }
 
+    /**
+     * 检查是否完成拼图
+     * 验证所有拼图块是否在正确位置
+     */
     checkWin() {
         console.log('Checking win condition...');
         
@@ -339,6 +398,10 @@ class Game {
         }
     }
 
+    /**
+     * 显示胜利弹窗
+     * 根据当前关卡显示不同内容
+     */
     showWinModal() {
         console.log('Showing win modal for level:', this.currentLevel);
         const modalTitle = $('#modal-title');
@@ -398,6 +461,10 @@ class Game {
         this.modal.css('display', 'flex');
     }
 
+    /**
+     * 显示最终胜利弹窗
+     * 展示总成绩并提供重新开始选项
+     */
     showFinalWinModal() {
         const modalTitle = $('#modal-title');
         const modalMessage = $('#modal-message');
@@ -448,6 +515,9 @@ class Game {
         this.modal.css('display', 'flex');
     }
 
+    /**
+     * 启动计时器
+     */
     startTimer() {
         this.timer = setInterval(() => {
             this.seconds++;
@@ -455,6 +525,9 @@ class Game {
         }, 1000);
     }
 
+    /**
+     * 停止计时器
+     */
     stopTimer() {
         if (this.timer) {
             clearInterval(this.timer);
@@ -462,6 +535,10 @@ class Game {
         }
     }
 
+    /**
+     * 更新显示
+     * 更新步数、关卡和时间显示
+     */
     updateDisplay() {
         this.movesDisplay.text(this.moves);
         this.currentLevelDisplay.text(this.currentLevel);
@@ -473,6 +550,9 @@ class Game {
         );
     }
 
+    /**
+     * 初始化模态框事件
+     */
     initModalEvents() {
         $('#modal-next').on('click', () => {
             if (this.currentLevel < 3) {
@@ -492,6 +572,9 @@ class Game {
         });
     }
 
+    /**
+     * 绑定预览相关事件
+     */
     bindPreviewEvents() {
         this.previewBtn.on('click', () => {
             this.previewImage.attr('src', this.currentImage);
@@ -508,12 +591,17 @@ class Game {
         });
     }
 
+    /**
+     * 隐藏预览
+     */
     hidePreview() {
         this.overlay.hide();
         this.previewContainer.hide();
     }
 
-    // 添加游戏开始提示方法
+    /**
+     * 显示游戏开始提示
+     */
     showGameStartTip() {
         // 移除可能存在的旧提示
         $('.tip-modal').remove();

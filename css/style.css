@@ -1,3 +1,4 @@
+/* 定义全局CSS变量,包含主题色、背景色、文字颜色、阴影和渐变等 */
 :root {
     --primary-color: #2196F3;
     --secondary-color: #FF4081;
@@ -7,6 +8,7 @@
     --gradient: linear-gradient(135deg, #2196F3, #1976D2);
 }
 
+/* 重置所有元素的默认样式 */
 * {
     margin: 0;
     padding: 0;
@@ -14,6 +16,7 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+/* 设置页面主体样式 */
 body {
     font-family: 'Helvetica Neue', Arial, sans-serif;
     background-color: var(--background-color);
@@ -24,12 +27,14 @@ body {
     padding: 20px 0;
 }
 
+/* 页面主容器,限制最大宽度并水平居中 */
 .container {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
 }
 
+/* 游戏标题区域样式 */
 .game-header {
     text-align: center;
     margin-bottom: 30px;
@@ -39,6 +44,7 @@ body {
     box-shadow: var(--shadow);
 }
 
+/* 游戏标题文字样式,使用渐变色效果 */
 .game-title {
     font-size: 28px;
     background: var(--gradient);
@@ -49,6 +55,7 @@ body {
     font-weight: bold;
 }
 
+/* 游戏统计数据网格布局 */
 .game-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -58,6 +65,7 @@ body {
     border-radius: 12px;
 }
 
+/* 单个统计项样式 */
 .stat-item {
     text-align: center;
     padding: 10px;
@@ -66,18 +74,21 @@ body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
+/* 统计项标签样式 */
 .stat-label {
     font-size: 14px;
     color: #666;
     margin-bottom: 5px;
 }
 
+/* 统计项数值样式 */
 .stat-value {
     font-size: 20px;
     font-weight: bold;
     color: var(--primary-color);
 }
 
+/* 拼图游戏主容器 */
 .puzzle-container {
     position: relative;
     width: 100%;
@@ -90,6 +101,7 @@ body {
     overflow: hidden;
 }
 
+/* 拼图块样式 */
 .puzzle-piece {
     position: absolute;
     background-size: cover;
@@ -101,6 +113,7 @@ body {
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
+/* 拼图块拖动时的样式 */
 .puzzle-piece.dragging {
     z-index: 1000;
     opacity: 0.8;
@@ -108,11 +121,13 @@ body {
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
+/* 拼图块悬停效果 */
 .puzzle-piece:hover {
     transform: scale(1.02);
     z-index: 10;
 }
 
+/* 控制按钮容器 */
 .controls {
     margin-top: 20px;
     display: flex;
@@ -121,12 +136,14 @@ body {
     padding: 0 20px;
 }
 
+/* 控制按钮组中的按钮样式 */
 .controls .btn {
     flex: 1;
     max-width: 160px;
     padding: 12px 24px;
 }
 
+/* 通用按钮样式 */
 .btn {
     padding: 12px 24px;
     border: none;
@@ -140,27 +157,32 @@ body {
     letter-spacing: 1px;
 }
 
+/* 主要按钮样式 */
 .btn.primary {
     background: var(--gradient);
     color: white;
 }
 
+/* 主要按钮悬停效果 */
 .btn.primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(33,150,243,0.3);
 }
 
+/* 次要按钮样式 */
 .btn.secondary {
     background: white;
     color: var(--primary-color);
     border: 2px solid var(--primary-color);
 }
 
+/* 次要按钮悬停效果 */
 .btn.secondary:hover {
     background: var(--primary-color);
     color: white;
 }
 
+/* 模态框容器 */
 .modal {
     display: none;
     position: fixed;
@@ -175,6 +197,7 @@ body {
     backdrop-filter: blur(5px);
 }
 
+/* 模态框内容区域 */
 .modal-content {
     background: white;
     padding: 25px;
@@ -185,24 +208,28 @@ body {
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
+/* 模态框标题 */
 .modal-title {
     font-size: 24px;
     color: var(--primary-color);
     margin-bottom: 20px;
 }
 
+/* 模态框消息文本 */
 .modal-message {
     margin-bottom: 25px;
     font-size: 16px;
     color: #666;
 }
 
+/* 模态框按钮组 */
 .modal-buttons {
     display: flex;
     justify-content: center;
     gap: 15px;
 }
 
+/* 排行榜容器 */
 .leaderboard {
     background: white;
     padding: 20px;
@@ -211,6 +238,7 @@ body {
     margin-top: 30px;
 }
 
+/* 排行榜标题 */
 .leaderboard-title {
     text-align: center;
     color: var(--primary-color);
@@ -218,10 +246,12 @@ body {
     font-size: 20px;
 }
 
+/* 排行榜列表 */
 .leaderboard-list {
     list-style: none;
 }
 
+/* 排行榜单项 */
 .leaderboard-item {
     display: flex;
     justify-content: space-between;
@@ -230,14 +260,17 @@ body {
     align-items: center;
 }
 
+/* 最后一个排行榜项目去除底部边框 */
 .leaderboard-item:last-child {
     border-bottom: none;
 }
 
+/* 图片上传输入框隐藏 */
 #image-upload {
     display: none;
 }
 
+/* 移动端适配样式 */
 @media (max-width: 480px) {
     .container {
         padding: 15px;
@@ -257,6 +290,7 @@ body {
     }
 }
 
+/* 模态框头部样式 */
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -264,6 +298,7 @@ body {
     margin-bottom: 20px;
 }
 
+/* 关闭按钮样式 */
 .close-btn {
     background: none;
     border: none;
@@ -273,19 +308,23 @@ body {
     padding: 0 8px;
 }
 
+/* 关闭按钮悬停效果 */
 .close-btn:hover {
     color: var(--primary-color);
 }
 
+/* 排行榜内容区域,支持滚动 */
 .leaderboard-content {
     max-height: 400px;
     overflow-y: auto;
 }
 
+/* 胜利消息容器 */
 .win-message {
     padding: 20px 0;
 }
 
+/* 祝贺文本样式 */
 .congrats-text {
     font-size: 1.2em;
     color: var(--primary-color);
@@ -293,6 +332,7 @@ body {
     margin-bottom: 20px;
 }
 
+/* 成就文本样式 */
 .achievement-text {
     color: #f39c12;
     font-weight: bold;
@@ -300,6 +340,7 @@ body {
     font-size: 1.1em;
 }
 
+/* 最终统计和关卡统计样式 */
 .final-stats,
 .level-stats {
     background: #f8f9fa;
@@ -309,45 +350,52 @@ body {
     box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
 }
 
+/* 统计信息段落样式 */
 .final-stats p,
 .level-stats p {
     margin: 5px 0;
     color: #666;
 }
 
+/* 下一关提示文本 */
 .next-level-hint {
     color: var(--primary-color);
     font-weight: bold;
     margin-top: 15px;
 }
 
+/* 模态框标题样式 */
 .modal-content h2 {
     color: var(--primary-color);
     font-size: 24px;
     margin-bottom: 20px;
 }
 
+/* 胜利消息段落样式 */
 .win-message p {
     margin: 10px 0;
 }
 
+/* 下一关按钮样式 */
 #modal-next {
     background: var(--gradient);
     color: white;
     font-weight: bold;
 }
 
+/* 下一关按钮悬停效果 */
 #modal-next:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(33,150,243,0.3);
 }
 
-/* 添加示例图相关样式 */
+/* 预览按钮容器 */
 .preview-button-container {
     margin: 10px 0;
     text-align: center;
 }
 
+/* 预览图片容器 */
 .preview-container {
     position: fixed;
     top: 50%;
@@ -364,13 +412,14 @@ body {
     overflow: auto;
 }
 
+/* 预览图片样式 */
 .preview-container img {
     width: 100%;
     height: auto;
     border-radius: 5px;
 }
 
-/* 添加遮罩层 */
+/* 遮罩层样式 */
 .overlay {
     position: fixed;
     top: 0;
@@ -382,6 +431,7 @@ body {
     display: none;
 }
 
+/* 游戏区域样式 */
 .game-area {
     background: #f8f9fa;
     border-radius: 20px;
@@ -389,14 +439,14 @@ body {
     margin: 10px 0;
 }
 
-/* 确保拼图块容器紧贴边缘 */
+/* 大屏幕拼图容器最大宽度限制 */
 @media screen and (min-width: 500px) {
     .puzzle-container {
         max-width: 500px;
     }
 }
 
-/* 排行榜样式优化 */
+/* 排行榜模态框样式 */
 .leaderboard-modal {
     max-width: 480px !important;
     padding: 0 !important;
@@ -404,6 +454,7 @@ body {
     overflow: hidden;
 }
 
+/* 模态框头部样式 */
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -415,6 +466,7 @@ body {
     border: none !important;
 }
 
+/* 模态框标题样式 */
 .modal-header h2 {
     font-size: 22px;
     color: white !important;
@@ -422,6 +474,7 @@ body {
     margin: 0;
 }
 
+/* 关闭按钮样式 */
 .close-btn {
     background: none;
     border: none;
@@ -433,17 +486,20 @@ body {
     opacity: 0.8;
 }
 
+/* 关闭按钮悬停效果 */
 .close-btn:hover {
     opacity: 1;
     transform: scale(1.1);
 }
 
+/* 排行榜内容区域 */
 .leaderboard-content {
     padding: 20px;
     max-height: 70vh;
     overflow: hidden;
 }
 
+/* 分数列表容器 */
 .scores-list {
     max-height: calc(70vh - 40px);
     overflow-y: auto;
@@ -451,7 +507,7 @@ body {
     margin: 0 -10px;
 }
 
-/* 优化滚动条样式 */
+/* 自定义滚动条样式 */
 .scores-list::-webkit-scrollbar {
     width: 6px;
 }
@@ -470,7 +526,7 @@ body {
     background: rgba(0, 0, 0, 0.2);
 }
 
-/* 排行榜项目样式优化 */
+/* 排行榜项目样式 */
 .score-item {
     display: flex;
     align-items: flex-start;
@@ -483,16 +539,19 @@ body {
     border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
+/* 排行榜项目悬停效果 */
 .score-item:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
 }
 
+/* 当前设备的排行项样式 */
 .score-item.current-device {
     background: #e3f2fd;
     border: 2px solid var(--primary-color);
 }
 
+/* 排名区域样式 */
 .rank-section {
     display: flex;
     align-items: center;
@@ -502,17 +561,20 @@ body {
     flex-shrink: 0;
 }
 
+/* 排名数字样式 */
 .rank {
     font-size: 24px;
     font-weight: bold;
     color: var(--primary-color);
 }
 
+/* 分数内容区域 */
 .score-content {
     flex: 1;
     position: relative;
 }
 
+/* 统计组样式 */
 .stat-group {
     display: flex;
     flex-wrap: wrap;
@@ -520,17 +582,20 @@ body {
     padding-right: 100px;
 }
 
+/* 统计项样式 */
 .stat-item {
     display: flex;
     flex-direction: column;
 }
 
+/* 统计标签样式 */
 .stat-label {
     font-size: 12px;
     color: #666;
     margin-bottom: 4px;
 }
 
+/* 统计值样式 */
 .stat-value {
     font-size: 18px;
     font-weight: 600;
@@ -538,10 +603,12 @@ body {
     font-family: monospace;
 }
 
+/* 完成时间值样式 */
 .stat-value.completion-time {
     font-size: 15px;
 }
 
+/* 当前标签样式 */
 .current-label {
     position: absolute;
     right: 0;
@@ -641,12 +708,13 @@ body {
     }
 }
 
+/* 排行榜项目动画 */
 .score-item {
     animation: slideIn 0.3s ease forwards;
     animation-delay: calc(var(--index) * 0.05s);
 }
 
-/* 排行榜模态框样式优化 */
+/* 排行榜模态框样式 */
 #leaderboardModal {
     display: none;
     position: fixed;
@@ -661,6 +729,7 @@ body {
     z-index: 2000;
 }
 
+/* 排行榜模态框容器 */
 .leaderboard-modal {
     width: 90%;
     max-width: 420px !important;
@@ -675,6 +744,7 @@ body {
     transform: translate(-50%, -50%);
 }
 
+/* 模态框头部 */
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -686,6 +756,7 @@ body {
     border: none !important;
 }
 
+/* 模态框标题 */
 .modal-header h2 {
     font-size: 22px;
     color: white !important;
@@ -693,6 +764,7 @@ body {
     margin: 0;
 }
 
+/* 排行榜内容区域 */
 .leaderboard-content {
     padding: 20px;
     max-height: 60vh;
@@ -700,6 +772,7 @@ body {
     background: white;
 }
 
+/* 分数列表 */
 .scores-list {
     max-height: calc(60vh - 40px);
     overflow-y: auto;
@@ -723,7 +796,7 @@ body {
     }
 }
 
-/* 操作按钮容器样式 */
+/* 操作按钮容器 */
 .action-buttons {
     display: flex;
     justify-content: center;
@@ -732,6 +805,7 @@ body {
     padding: 0 20px;
 }
 
+/* 操作按钮样式 */
 .action-buttons .btn {
     flex: 1;
     max-width: 160px;
@@ -746,6 +820,7 @@ body {
     transition: all 0.3s ease;
 }
 
+/* 操作按钮悬停效果 */
 .action-buttons .btn:hover {
     background: var(--primary-color);
     color: white;
@@ -791,4 +866,3 @@ body {
         max-width: 200px;
     }
 }
-  

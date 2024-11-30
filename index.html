@@ -1,27 +1,37 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <!-- 设置文档编码和移动端视口 -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>拼图游戏</title>
+    <!-- 引入自定义样式表 -->
     <link rel="stylesheet" href="css/style.css">
+    <!-- 引入jQuery相关库 -->
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-ui@1.13.2/dist/jquery-ui.min.js"></script>
+    <!-- 引入移动端触摸支持库 -->
     <script src="https://cdn.jsdelivr.net/npm/jquery-ui-touch-punch@0.2.3/jquery.ui.touch-punch.min.js"></script>
 </head>
 <body>
+    <!-- 游戏主容器 -->
     <div class="container">
+        <!-- 游戏头部区域 -->
         <div class="game-header">
             <h1 class="game-title">拼图游戏</h1>
+            <!-- 游戏状态显示区域 -->
             <div class="game-stats">
+                <!-- 当前关卡显示 -->
                 <div class="stat-item">
                     <div class="stat-label">关卡</div>
                     <div class="stat-value" id="current-level">1</div>
                 </div>
+                <!-- 移动步数显示 -->
                 <div class="stat-item">
                     <div class="stat-label">步数</div>
                     <div class="stat-value" id="moves">0</div>
                 </div>
+                <!-- 游戏时间显示 -->
                 <div class="stat-item">
                     <div class="stat-label">时间</div>
                     <div class="stat-value" id="time">00:00</div>
@@ -29,22 +39,27 @@
             </div>
         </div>
 
+        <!-- 功能按钮区域 -->
         <div class="action-buttons">
             <button id="preview-btn" class="btn secondary">查看示例图</button>
             <button id="leaderboard-btn" class="btn secondary">排行榜</button>
         </div>
 
+        <!-- 拼图游戏主区域 -->
         <div class="game-area">
             <div id="puzzle" class="puzzle-container"></div>
         </div>
 
+        <!-- 示例图片预览容器 -->
         <div id="preview-container" class="preview-container">
             <img id="preview-image" src="" alt="示例图">
         </div>
 
+        <!-- 游戏控制按钮区域 -->
         <div class="controls">
             <button id="start-btn" class="btn primary">开始游戏</button>
             <button id="upload-btn" class="btn secondary">上传图片</button>
+            <!-- 隐藏的文件上传输入框 -->
             <input type="file" id="image-upload" accept="image/*">
         </div>
     </div>
@@ -54,6 +69,7 @@
         <div class="modal-content">
             <h2 id="modal-title"></h2>
             <div id="modal-message"></div>
+            <!-- 弹窗按钮组 -->
             <div class="modal-buttons">
                 <button id="modal-next" class="btn primary">下一关</button>
                 <button id="modal-restart" class="btn">重新开始</button>
@@ -64,16 +80,19 @@
     <!-- 排行榜弹窗 -->
     <div id="leaderboardModal" class="modal">
         <div class="modal-content">
+            <!-- 排行榜标题和关闭按钮 -->
             <div class="modal-header">
                 <h2>排行榜</h2>
                 <button class="close-btn">&times;</button>
             </div>
+            <!-- 排行榜内容区域 -->
             <div class="leaderboard-content">
                 <ul id="leaderboard"></ul>
             </div>
         </div>
     </div>
 
+    <!-- 引入游戏相关JavaScript文件 -->
     <script src="js/storage.js"></script>
     <script src="js/leaderboard.js"></script>
     <script src="js/game.js"></script>

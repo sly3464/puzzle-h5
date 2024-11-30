@@ -1,8 +1,20 @@
+/**
+ * 排行榜类
+ * 管理游戏排行榜的显示和数据存储
+ */
 class Leaderboard {
+    /**
+     * 构造函数
+     * 初始化排行榜
+     */
     constructor() {
         this.initLeaderboard();
     }
 
+    /**
+     * 初始化排行榜
+     * 创建排行榜按钮和模态框
+     */
     initLeaderboard() {
         // 添加排行榜按钮
         if (!$('#leaderboard-btn').length) {
@@ -35,6 +47,10 @@ class Leaderboard {
         this.bindEvents();
     }
 
+    /**
+     * 绑定排行榜相关事件
+     * 包括打开排行榜、关闭排行榜等交互事件
+     */
     bindEvents() {
         // 绑定排行榜按钮点击事件
         $('#leaderboard-btn').off('click').on('click', () => this.showLeaderboard());
@@ -58,6 +74,10 @@ class Leaderboard {
         });
     }
 
+    /**
+     * 显示排行榜
+     * 从存储中获取成绩数据并展示
+     */
     showLeaderboard() {
         const scores = gameStorage.getScores();
         const currentDeviceId = gameStorage.deviceId;
@@ -116,6 +136,11 @@ class Leaderboard {
         $('#leaderboardModal').fadeIn(200);
     }
 
+    /**
+     * 添加新的游戏成绩
+     * @param {Object} score - 包含游戏成绩信息的对象
+     * @returns {boolean} 保存是否成功
+     */
     addScore(score) {
         return gameStorage.saveScore(score);
     }
