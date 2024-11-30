@@ -2,7 +2,7 @@
 
 一个基于 HTML5 的移动端拼图小游戏，支持触摸操作、自定义图片上传和多关卡挑战。
 
-##项目截图
+## 项目截图
 <div style="display: flex; justify-content: space-between;">
     <img src="images/image.png" width="32%" alt="游戏截图1">
     <img src="images/image-1.png" width="32%" alt="游戏截图2">
