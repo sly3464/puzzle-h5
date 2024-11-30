@@ -388,4 +388,331 @@ body {
         max-width: 500px;
     }
 }
+
+/* 排行榜样式优化 */
+.leaderboard-modal {
+    max-width: 480px !important;
+    padding: 0 !important;
+    border-radius: 20px !important;
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    background: var(--primary-color);
+    color: white;
+    margin: 0 !important;
+    border: none !important;
+}
+
+.modal-header h2 {
+    font-size: 22px;
+    color: white !important;
+    font-weight: 600;
+    margin: 0;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: white;
+    padding: 0 8px;
+    transition: all 0.2s ease;
+    opacity: 0.8;
+}
+
+.close-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.leaderboard-content {
+    padding: 20px;
+    max-height: 70vh;
+    overflow: hidden;
+}
+
+.scores-list {
+    max-height: calc(70vh - 40px);
+    overflow-y: auto;
+    padding: 5px 10px;
+    margin: 0 -10px;
+}
+
+/* 优化滚动条样式 */
+.scores-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scores-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scores-list::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    transition: all 0.2s ease;
+}
+
+.scores-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+/* 排行榜项目样式优化 */
+.score-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    position: relative;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.score-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+.score-item.current-device {
+    background: #e3f2fd;
+    border: 2px solid var(--primary-color);
+}
+
+.rank-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    margin-right: 20px;
+    flex-shrink: 0;
+}
+
+.rank {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.score-content {
+    flex: 1;
+    position: relative;
+}
+
+.stat-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-right: 100px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-color);
+    font-family: monospace;
+}
+
+.stat-value.completion-time {
+    font-size: 15px;
+}
+
+.current-label {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: var(--primary-color);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(33, 150, 243, 0.2);
+    white-space: nowrap;
+}
+
+/* 前三名特殊样式 */
+.score-item:nth-child(1) .rank {
+    color: #FFD700;
+    font-size: 26px;
+}
+
+.score-item:nth-child(2) .rank {
+    color: #C0C0C0;
+    font-size: 24px;
+}
+
+.score-item:nth-child(3) .rank {
+    color: #CD7F32;
+    font-size: 24px;
+}
+
+/* 移动端适配 */
+@media (max-width: 480px) {
+    .score-item {
+        padding: 12px 16px;
+    }
+
+    .rank-section {
+        width: 32px;
+        margin-right: 12px;
+    }
+
+    .stat-group {
+        gap: 12px;
+        padding-right: 0;
+        padding-top: 25px; /* 为current-label预留空间 */
+    }
+
+    .stat-item {
+        min-width: calc(50% - 6px); /* 两列布局，考虑间距 */
+    }
+
+    /* 完成时间单独占一行 */
+    .stat-item:last-child {
+        min-width: 100%;
+    }
+
+    .stat-value {
+        font-size: 15px;
+    }
+
+    .stat-value.completion-time {
+        font-size: 13px;
+    }
+
+    .current-label {
+        padding: 3px 8px;
+        font-size: 11px;
+        top: -6px;
+        right: 0;
+    }
+}
+
+/* 中等屏幕适配 */
+@media (min-width: 481px) and (max-width: 768px) {
+    .stat-group {
+        gap: 15px;
+    }
+
+    .stat-value {
+        font-size: 16px;
+    }
+
+    .stat-value.completion-time {
+        font-size: 14px;
+    }
+}
+
+/* 添加动画效果 */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.score-item {
+    animation: slideIn 0.3s ease forwards;
+    animation-delay: calc(var(--index) * 0.05s);
+}
+
+/* 排行榜模态框样式优化 */
+#leaderboardModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.leaderboard-modal {
+    width: 90%;
+    max-width: 420px !important;
+    padding: 0 !important;
+    border-radius: 20px !important;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    background: var(--gradient);
+    color: white;
+    margin: 0 !important;
+    border: none !important;
+}
+
+.modal-header h2 {
+    font-size: 22px;
+    color: white !important;
+    font-weight: 600;
+    margin: 0;
+}
+
+.leaderboard-content {
+    padding: 20px;
+    max-height: 60vh;
+    overflow: hidden;
+    background: white;
+}
+
+.scores-list {
+    max-height: calc(60vh - 40px);
+    overflow-y: auto;
+    padding: 5px;
+}
+
+/* 移动端适配 */
+@media (max-width: 480px) {
+    .leaderboard-modal {
+        width: 95%;
+        max-height: 80vh;
+        margin: 0;
+    }
+
+    .leaderboard-content {
+        max-height: 70vh;
+    }
+
+    .scores-list {
+        max-height: calc(70vh - 40px);
+    }
+}
   

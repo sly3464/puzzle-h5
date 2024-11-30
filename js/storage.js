@@ -1,65 +1,68 @@
 class GameStorage {
     constructor() {
-        this.storageKey = 'puzzle_game_data';
+        this.storageKey = 'puzzle_game_scores';
+        this.deviceId = this.getOrCreateDeviceId();
     }
 
-    // 保存游戏进度
-    saveGameProgress(data) {
-        const gameData = {
-            level: data.level,
-            moves: data.moves,
-            time: data.seconds,
-            gridSize: data.gridSize,
-            lastPlayed: new Date().getTime()
-        };
-        localStorage.setItem(this.storageKey, JSON.stringify(gameData));
-    }
-
-    // 读取游戏进度
-    loadGameProgress() {
-        const savedData = localStorage.getItem(this.storageKey);
-        return savedData ? JSON.parse(savedData) : null;
-    }
-
-    // 清除游戏进度
-    clearGameProgress() {
-        localStorage.removeItem(this.storageKey);
-    }
-
-    // 保存最佳成绩
-    saveBestScore(difficulty, score) {
-        const key = `puzzle_best_score_${difficulty}`;
-        const currentBest = this.getBestScore(difficulty);
-        
-        if (!currentBest || score.time < currentBest.time || 
-            (score.time === currentBest.time && score.moves < currentBest.moves)) {
-            localStorage.setItem(key, JSON.stringify({
-                moves: score.moves,
-                time: score.time,
-                date: new Date().getTime()
-            }));
-            return true;
+    // 获取或创建设备ID
+    getOrCreateDeviceId() {
+        let deviceId = localStorage.getItem('puzzle_device_id');
+        if (!deviceId) {
+            deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('puzzle_device_id', deviceId);
         }
-        return false;
+        return deviceId;
     }
 
-    // 获取最佳成绩
-    getBestScore(difficulty) {
-        const key = `puzzle_best_score_${difficulty}`;
-        const savedScore = localStorage.getItem(key);
-        return savedScore ? JSON.parse(savedScore) : null;
+    // 保存成绩
+    saveScore(score) {
+        let scores = this.getScores();
+        const existingScoreIndex = scores.findIndex(s => s.deviceId === this.deviceId);
+
+        const newScore = {
+            deviceId: this.deviceId,
+            time: score.time,
+            moves: score.moves,
+            date: new Date().getTime()
+        };
+
+        if (existingScoreIndex !== -1) {
+            // 如果已有记录，判断是否需要更新
+            const existingScore = scores[existingScoreIndex];
+            if (score.time < existingScore.time || 
+                (score.time === existingScore.time && score.moves < existingScore.moves)) {
+                scores[existingScoreIndex] = newScore;
+            }
+        } else {
+            scores.push(newScore);
+        }
+
+        // 按时间和步数排序
+        scores.sort((a, b) => {
+            if (a.time === b.time) {
+                return a.moves - b.moves;
+            }
+            return a.time - b.time;
+        });
+
+        // 只保留前10名
+        scores = scores.slice(0, 10);
+        
+        localStorage.setItem(this.storageKey, JSON.stringify(scores));
+        return scores;
     }
 
-    // 保存自定义图片
-    saveCustomImage(imageData) {
-        localStorage.setItem('puzzle_custom_image', imageData);
+    // 获取所有成绩
+    getScores() {
+        const scores = localStorage.getItem(this.storageKey);
+        return scores ? JSON.parse(scores) : [];
     }
 
-    // 获取自定义图片
-    getCustomImage() {
-        return localStorage.getItem('puzzle_custom_image');
+    // 获取当前设备的最佳成绩
+    getCurrentDeviceBestScore() {
+        const scores = this.getScores();
+        return scores.find(score => score.deviceId === this.deviceId);
     }
 }
 
-// 导出存储管理器实例
 const gameStorage = new GameStorage(); 

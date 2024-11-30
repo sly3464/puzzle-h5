@@ -189,7 +189,7 @@ class Game {
     }
 
     initDraggable() {
-        let isDragging = false; // 添加拖动状态标记
+        let isDragging = false;
         let startPosition = null;
         let startElement = null;
 
@@ -197,10 +197,7 @@ class Game {
             containment: 'parent',
             zIndex: 1000,
             start: function(event, ui) {
-                // 如果已经在拖动中，阻止新的拖动开始
-                if (isDragging) {
-                    return false;
-                }
+                if (isDragging) return false;
                 
                 isDragging = true;
                 startPosition = $(this).position();
@@ -218,7 +215,6 @@ class Game {
                     y: ui.offset.top + currentElement.height() / 2
                 };
 
-                // 找到最近的拼图块
                 $('.puzzle-piece').not(currentElement).each(function() {
                     const piece = $(this);
                     const pieceOffset = piece.offset();
@@ -238,29 +234,25 @@ class Game {
                     }
                 });
 
-                // 如果找到目标拼图块，执行交换
                 if (endElement) {
                     const endPosition = endElement.position();
                     
-                    // 禁用所有拼图块的拖动
                     $('.puzzle-piece').draggable('disable');
                     
-                    // 执行交换动画
                     currentElement.animate(endPosition, 200);
                     endElement.animate(startPosition, 200, () => {
-                        // 动画完成后重新启用拖动
                         $('.puzzle-piece').draggable('enable');
                         isDragging = false;
                         
-                        // 增加移动步数
                         game.moves++;
                         game.updateDisplay();
                         
-                        // 检查是否完成
-                        setTimeout(() => game.checkWin(), 50);
+                        setTimeout(() => {
+                            console.log('Checking win after piece swap');
+                            game.checkWin();
+                        }, 250);
                     });
                 } else {
-                    // 如果没有找到目标，返回起始位置
                     currentElement.animate(startPosition, 200, () => {
                         isDragging = false;
                     });
@@ -306,8 +298,10 @@ class Game {
     }
 
     checkWin() {
-        // 确保没有动画正在进行中
+        console.log('Checking win condition...');
+        
         if ($('.puzzle-piece:animated').length > 0) {
+            console.log('Animation in progress, skipping check');
             return;
         }
 
@@ -323,17 +317,30 @@ class Game {
                 top: correctRow * pieceWidth
             };
             
+            console.log(`Piece ${index}:`, {
+                current: currentPos,
+                correct: correctPos,
+                diff: {
+                    left: Math.abs(currentPos.left - correctPos.left),
+                    top: Math.abs(currentPos.top - correctPos.top)
+                }
+            });
+            
             return Math.abs(currentPos.left - correctPos.left) < 5 &&
                    Math.abs(currentPos.top - correctPos.top) < 5;
         });
 
+        console.log('Win condition:', isWin);
+
         if (isWin) {
+            console.log('Game won! Current level:', this.currentLevel);
             this.stopTimer();
             this.showWinModal();
         }
     }
 
     showWinModal() {
+        console.log('Showing win modal for level:', this.currentLevel);
         const modalTitle = $('#modal-title');
         const modalMessage = $('#modal-message');
         
@@ -407,41 +414,38 @@ class Game {
             </div>
         `);
         
-        // 修改按钮
-        $('.modal-buttons').empty().append(`
-            <button id="modal-restart" class="btn primary">重新开始</button>
-            <button id="modal-change-image" class="btn secondary">换一张图片试试</button>
-        `);
+        // 保存成绩到排行榜
+        const score = {
+            time: this.seconds,
+            moves: this.moves,
+            level: this.currentLevel
+        };
+        leaderboard.addScore(score);
         
-        // 绑定按钮事件
+        $('.modal-buttons').empty()
+            .append(`
+                <button id="modal-restart" class="btn primary">重新开始</button>
+                <button id="modal-change-image" class="btn secondary">换一张图片试试</button>
+            `);
+        
         $('#modal-restart').on('click', () => {
-            this.currentLevel = 1; // 重置到第一关
+            this.currentLevel = 1;
             this.isPlaying = false;
             this.modal.hide();
             this.startGame();
         });
         
         $('#modal-change-image').on('click', () => {
-            this.currentLevel = 1; // 重置到第一关
+            this.currentLevel = 1;
             this.isPlaying = false;
             this.modal.hide();
-            this.uploadBtn.click(); // 触发图片上传
+            this.uploadBtn.click();
         });
         
-        // 重置游戏状态
         this.isPlaying = false;
         this.uploadBtn.prop('disabled', false).removeClass('disabled');
         
         this.modal.css('display', 'flex');
-        
-        // 保存成绩
-        const score = {
-            level: this.currentLevel,
-            moves: this.moves,
-            time: this.seconds
-        };
-        gameStorage.saveBestScore(this.gridSize, score);
-        leaderboard.addScore(this.gridSize, score);
     }
 
     startTimer() {
